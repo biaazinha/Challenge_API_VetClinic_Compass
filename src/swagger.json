@@ -1,0 +1,513 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API VetClinic",
+        "description": "Essa API tem como objetivo realizar operações com tutores e seus animais de estimação.",
+        "version": "0.0.1",
+        "contact":{
+            "email": "bianca.ramos.pb@compasso.com.br"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/v1",
+            "description": "API de teste"
+        }
+    ],
+    "paths": {
+        "/tutors": {
+            "get": {
+                "summary": "Recupera todos os tutores cadastrados.",
+                "description": "Essa rota será responsável pela exibição de todos os tutores e seus pets existentes.",
+                "tags": ["Tutors"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tutors"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tutor": {
+            "post": {
+                "summary": "Cria um tutor.",
+                "description": "Essa rota será responsável pela criação de um novo tutor.",
+                "tags": ["Tutor"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name" : {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "phone" : {
+                                        "type": "string",
+                                        "example": "85989323895"
+                                    },
+                                    "email" : {
+                                        "type": "string",
+                                        "example": "jonas@paidepet.com"
+                                    },
+                                    "date_of_birth" : {
+                                        "type": "string",
+                                        "example": "1993-12-12 10:10"
+                                    },
+                                    "zip_code" : {
+                                        "type": "string",
+                                        "example": "61760000"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Informações do tutor",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Tutor"
+                        }
+                    }
+                ],
+                "201": {
+                    "description": "Pet criado com sucesso"
+                },
+                "responses": {
+                    "400": {
+                        "description": "Informação inválida",
+                        "content" :{
+                            "application/json": {
+                                "example": "Please provide information value"
+                            } 
+                        }
+                    }
+                }
+            }
+        },
+        "/tutor/{id}": {
+            "put": {
+                "summary": "Atualiza tutor por ID.",
+                "description": "Essa rota será responsável pela atualização ou mudança de alguma informação de um tutor já existente.",
+                "tags": ["Tutor"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name" : {
+                                        "type": "string",
+                                        "example": "John Wick"
+                                    },
+                                    "phone" : {
+                                        "type": "string",
+                                        "example": "85989323895"
+                                    },
+                                    "email" : {
+                                        "type": "string",
+                                        "example": "jonas@paidepet.com"
+                                    },
+                                    "date_of_birth" : {
+                                        "type": "string",
+                                        "example": "1993-12-12 10:10"
+                                    },
+                                    "zip_code" : {
+                                        "type": "string",
+                                        "example": "61760000"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Informações do tutor que podem ser aletradas ou atualizadas(Alterei o nome no exemplo para teste)",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Tutor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content" :{
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tutors"
+                                }
+                            }
+                        }                          
+                    },
+                    "404": {
+                        "description": "Tutor não encontrado",
+                        "content" :{
+                            "application/json": {
+                                "example": "Tutor not found"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Deleta tutor por ID.",
+                "description": "Essa rota será responsável por eliminar/excluir um tutor existente .",
+                "tags": ["Tutor"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tutor deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Tutor não encontrado",
+                        "content" : {
+                            "application/json": {
+                                "example": "Tutor not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pet/{id}": {
+            "post": {
+                "summary": "Cria um pet.",
+                "description": "Essa rota será responsável pela criação de um novo pet a partir de um tutor fornecido.",
+                "tags": ["Pet"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name" : {
+                                        "type": "string",
+                                        "example": "Lilo"
+                                    },
+                                    "species" : {
+                                        "type": "string",
+                                        "example": "dog"
+                                    },
+                                    "carry" : {
+                                        "type": "string",
+                                        "example": "p"
+                                    },
+                                    "weight" : {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "date_of_birth": {
+                                        "type": "string",
+                                        "example": "1993-12-12 10:10"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Informações do tutor",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Tutor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Pet criado com sucesso"
+                    },
+                    "400": {
+                        "description": "Informação inválida",
+                        "content" :{
+                            "application/json": {
+                                "example": "Please provide information value"
+                            } 
+                        }
+                    }
+                }
+            }
+        },
+        "/pet/{petId}/tutor/{tutorId}": {
+            "put": {
+                "summary": "Atualiza pet por ID.",
+                "description": "Essa rota será responsável pela atualização ou mudança de alguma informação de um pet já existente dentro de um tutor.",
+                "tags": ["Pet"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "petId": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "name" : {
+                                        "type": "string",
+                                        "example": "Mel"
+                                    },
+                                    "species" : {
+                                        "type": "string",
+                                        "example": "dog"
+                                    },
+                                    "carry" : {
+                                        "type": "string",
+                                        "example": "p"
+                                    },
+                                    "weight" : {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "date_of_birth": {
+                                        "type": "string",
+                                        "example": "1993-12-12 10:10"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            "parameters": [
+                {
+                    "name": "petId",
+                    "in": "path",
+                    "schema": {
+                        "type": "number"
+                    },
+                    "required": true
+                },
+                {
+                    "name": "tutorId",
+                    "in": "path",
+                    "schema": {
+                        "type": "number"
+                    },
+                    "required": true
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content" :{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Pet"
+                            }
+                        }
+                    }                          
+                },
+                "404": {
+                    "description": "Tutor ou pet não encontrado",
+                    "content" :{
+                        "application/json": {
+                            "example": "Tutor or pet not found"
+                        }
+                    }
+                }
+            }
+            },
+            "delete": {
+                "summary": "Deleta pet por ID.",
+                "description": "Essa rota será responsável por eliminar/excluir um pet existente de um tutor existente.",
+                "tags": ["Pet"],
+                "parameters": [
+                    {
+                        "name": "petId",
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "tutorId",
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Pet deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Tutor ou Pet não encontrado",
+                        "content" : {
+                            "application/json": {
+                                "example": "Tutor or Pet not found"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Tutors": {
+                "title": "Tutors",
+                "description": "Informações do Tutor",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "number"
+                        },
+                        "name" : {
+                            "type": "string"
+                        },
+                        "phone" : {
+                            "type": "string"
+                        },
+                        "email" : {
+                            "type": "string"
+                        },
+                        "date_of_birth" : {
+                            "type": "string"
+                        },
+                        "zip_code" : {
+                            "type": "string"
+                        },
+                        "pet": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number"
+                                },
+                                "name" : {
+                                    "type": "string"
+                                },
+                                "species" : {
+                                    "type": "string"
+                                },
+                                "carry" : {
+                                    "type": "string"
+                                },
+                                "weight" : {
+                                    "type": "number"
+                                },
+                                "date_of_birth" : {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Tutor": {
+                "title": "Tutor",
+                "description": "Informações de um Tutor",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name" : {
+                        "type": "string"
+                    },
+                    "phone" : {
+                        "type": "string"
+                    },
+                    "email" : {
+                        "type": "string"
+                    },
+                    "date_of_birth" : {
+                        "type": "string"
+                    },
+                    "zip_code" : {
+                        "type": "string"
+                    }
+                }
+            },
+            "Pet": {
+                "title": "Pet",
+                "description": "Informações de um Pet",
+                "type": "object",
+                "properties": {
+                    "Tutor": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "name" : {
+                                "type": "string"
+                            },
+                            "species" : {
+                                "type": "string"
+                            },
+                            "carry" : {
+                                "type": "string"
+                            },
+                            "weight" : {
+                                "type": "number"
+                            },
+                            "date_of_birth": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
